@@ -21,7 +21,7 @@ router.get("/memes", (req, res) => {
 router.post("/memes", (req, res) => {
   const newItem = new Item(req.body);
   newItem
-    .save()
+    .save() // save new item and respond with the id
     .then((item) => res.json({ id: item._id }))
     .catch(() => res.status(500).send(`Failed to add item`));
 });
@@ -32,9 +32,15 @@ router.get("/memes/:id", (req, res) => {
     { $match: { _id: ObjectId(req.params.id) } }, // match an item having the id in params
     { $project: { id: "$_id", name: 1, caption: 1, url: 1, _id: 0 } }, // Creat an alias for _id field and exclude the original id field from result
   ])
-    .then((item) => res.json(item)) // responding back with the item
-    .catch(() =>
-      res.status(404).send(`Item with id ${req.params.id} not found`)
+    .then((item) => {
+      if (!item.length) {
+        res.status(404).send(`Item with id ${req.params.id} not found`);
+      } else {
+        res.json(item); // responding back with the item
+      }
+    })
+    .catch(
+      () => res.status(500).send(`Item with id ${req.params.id} could not be fetched`) // Item not found
     );
 });
 
@@ -44,12 +50,27 @@ router.patch("/memes/:id", (req, res) => {
     .then((item) =>
       item
         .updateOne({
+          // If the requested item is found update it
           caption: req.body.caption,
           url: req.body.url,
         })
-        .then(() => res.status(204).send())
+        .then(() => res.status(204).send()) // Update successful
         .catch(() => res.status(500).send(`Update Failed`))
     )
+    .catch(
+      () => res.status(404).send(`Item with id ${req.params.id} not found`) // Item not found
+    );
+});
+
+// Delete an item
+router.delete("/memes/:id", (req, res) => {
+  Item.findById(req.params.id) // extracting id from the request url
+    .then((item) => {
+      item
+        .remove()
+        .then(() => res.status(204).send()) // Delete successful
+        .catch(() => res.status(500).send(`Delete Failed`));
+    })
     .catch(() =>
       res.status(404).send(`Item with id ${req.params.id} not found`)
     );
