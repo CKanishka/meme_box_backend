@@ -4,9 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const items = require("./routes/api"); //importing the route file
 
-const mongoURI =
-  process.env.MONGODB_URI ||
-  ""; // mongoDB URL
+const mongoURI = process.env.MONGODB_URI  // mongoDB URI
 
 const port = process.env.PORT || 5000; // port where the server listens
 
