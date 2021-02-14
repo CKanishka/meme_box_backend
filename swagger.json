@@ -1,0 +1,207 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Meme Box",
+    "description": "Meme Box APIs"
+  },
+  "host": "localhost:8081",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "memes",
+      "description": "CRUD operation for memes"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/memes": {
+      "get": {
+        "summary": "Get latest 100 memes",
+        "description": "Returns a list of latest 100 memes or an empty array if none exists.",
+        "tags": [
+          "memes"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of memes",
+            "schema": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new meme",
+        "description": "Adds a new meme to the list and returns the id.",
+        "tags": [
+          "memes"
+        ],
+        "parameters": [
+          {
+            "name": "meme",
+            "in": "body",
+            "description": "The meme to create.",
+            "schema": {
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Id of newly added meme",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to add meme"
+          }
+        }
+      }
+    },
+    "/memes/{id}": {
+      "get": {
+        "summary": "Get a single meme",
+        "description": "Returns a single meme for its id",
+        "tags": [
+          "memes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The meme's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A Meme",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Meme not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Edit an existing meme",
+        "description": "Updates the url, caption for a given meme id.",
+        "tags": [
+          "memes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The meme's id",
+            "type": "string"
+          },
+          {
+            "name": "meme",
+            "in": "body",
+            "description": "The meme url and caption to update.",
+            "schema": {
+              "properties": {
+                "url": {
+                  "type": "string"
+                },
+                "caption": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Meme updated successfully"
+          },
+          "404": {
+            "description": "Meme not found"
+          },
+          "500": {
+            "description": "Failed to update meme"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an existing meme",
+        "description": "Delete meme with matching id.",
+        "tags": [
+          "memes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The meme's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Meme deleted successfully"
+          },
+          "404": {
+            "description": "Meme not found"
+          },
+          "500": {
+            "description": "Failed to delete meme"
+          }
+        }
+      }
+    }
+  }
+}
